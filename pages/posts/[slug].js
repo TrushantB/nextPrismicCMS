@@ -26,6 +26,7 @@ export default function Post({ post, morePosts, preview }) {
           <PostTitle>Loading…</PostTitle>
         ) : (
           <>
+          {post && 
             <article>
               <Head>
                 <title>
@@ -38,9 +39,10 @@ export default function Post({ post, morePosts, preview }) {
                 coverImage={post.coverimage}
                 date={post.date}
                 author={post.author}
-              />
+                />
               <PostBody content={post.content} />
             </article>
+              }
             <SectionSeparator />
             {morePosts && morePosts.length > 0 && (
               <MoreStories posts={morePosts} />
@@ -54,7 +56,7 @@ export default function Post({ post, morePosts, preview }) {
 
 export async function getStaticProps({ params, preview = false, previewData }) {
   const data = await getPostAndMorePosts(params.slug, previewData)
-
+  // console.log(JSON.stringify(data))
   return {
     props: {
       preview,
@@ -65,7 +67,8 @@ export async function getStaticProps({ params, preview = false, previewData }) {
 }
 
 export async function getStaticPaths() {
-  const allPosts = await getAllPostsWithSlug()
+  const allPosts = await getAllPostsWithSlug();
+  
   return {
     paths: allPosts?.map(({ node }) => `/posts/${node._meta.uid}`) || [],
     fallback: true,
